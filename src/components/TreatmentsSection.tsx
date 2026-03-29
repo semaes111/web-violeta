@@ -16,7 +16,7 @@ import {
 type Category = 'facial' | 'corporal' | 'regenerativo';
 
 interface Treatment {
-  icon: React.ElementType;
+  icon: React.FC<{ size?: number; style?: React.CSSProperties }>;
   name: string;
   desc: string;
   tags: string[];
