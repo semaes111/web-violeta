@@ -12,6 +12,9 @@ import {
   ChevronRight,
   ArrowRight,
 } from 'lucide-react';
+import BentoTilt from './BentoTilt';
+import AnimatedTitle from './AnimatedTitle';
+import MagneticButton from './MagneticButton';
 
 type Category = 'facial' | 'corporal' | 'regenerativo';
 
@@ -110,9 +113,12 @@ const TreatmentsSection: React.FC = () => {
         {/* Header */}
         <motion.div {...fadeUp} transition={{ duration: 0.6 }} style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}>
           <span className="section-label" style={{ justifyContent: 'center' }}>Tratamientos</span>
-          <h2 className="section-title" style={{ maxWidth: 600, margin: '0 auto var(--space-md)' }}>
-            Tecnología al servicio de <span className="text-gradient">tu belleza</span>
-          </h2>
+          <AnimatedTitle
+            text="Tecnología al servicio de tu belleza"
+            tag="h2"
+            className="section-title"
+            style={{ maxWidth: 600, margin: '0 auto var(--space-md)', justifyContent: 'center' }}
+          />
           <p className="section-subtitle" style={{ margin: '0 auto' }}>
             Cada tratamiento se adapta a tu anatomía y objetivos personales
             con protocolos de última generación.
@@ -177,8 +183,8 @@ const TreatmentsSection: React.FC = () => {
             className="grid-4"
           >
             {filtered.map((t, i) => (
+              <BentoTilt key={t.name} tiltStrength={6}>
               <motion.div
-                key={t.name}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
@@ -191,6 +197,7 @@ const TreatmentsSection: React.FC = () => {
                   cursor: 'pointer',
                   position: 'relative',
                   overflow: 'hidden',
+                  height: '100%',
                 }}
               >
                 {/* Top gradient line */}
@@ -281,6 +288,7 @@ const TreatmentsSection: React.FC = () => {
                   Más info <ChevronRight size={14} />
                 </div>
               </motion.div>
+              </BentoTilt>
             ))}
           </motion.div>
         </AnimatePresence>
@@ -291,9 +299,11 @@ const TreatmentsSection: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
           style={{ textAlign: 'center', marginTop: 'var(--space-3xl)' }}
         >
-          <a href="#contact" className="btn btn-outline" style={{ gap: '0.5rem' }}>
-            Ver todos los tratamientos <ArrowRight size={16} />
-          </a>
+          <MagneticButton strength={0.3} radius={100}>
+            <a href="#contact" className="btn btn-outline" style={{ gap: '0.5rem' }}>
+              Ver todos los tratamientos <ArrowRight size={16} />
+            </a>
+          </MagneticButton>
         </motion.div>
       </div>
     </section>

@@ -1,5 +1,11 @@
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, Sparkles, Star } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import MagneticButton from './MagneticButton';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const stats = [
   { number: '15+', label: 'Años experiencia' },
@@ -9,8 +15,53 @@ const stats = [
 ];
 
 const HeroSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!headingRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // 3D word reveal for main heading
+      const words = headingRef.current!.querySelectorAll('.hero-word');
+      gsap.fromTo(words, {
+        opacity: 0,
+        transform: 'translate3d(10px, 51px, -60px) rotateY(60deg) rotateX(-40deg)',
+      }, {
+        opacity: 1,
+        transform: 'translate3d(0, 0, 0) rotateY(0deg) rotateX(0deg)',
+        ease: 'power2.inOut',
+        stagger: 0.06,
+        delay: 0.5,
+        duration: 1,
+      });
+
+      // Scroll-linked clip-path morph on hero section
+      if (sectionRef.current) {
+        gsap.to(sectionRef.current, {
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+          opacity: 0.3,
+          y: -80,
+          scale: 0.95,
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="section" id="home" style={{ position: 'relative', overflow: 'hidden' }}>
+    <section
+      ref={sectionRef}
+      className="section"
+      id="home"
+      style={{ position: 'relative', overflow: 'hidden' }}
+    >
       {/* Ambient glows */}
       <div
         className="glow-orb glow-orb-accent animate-pulse-glow"
@@ -48,41 +99,45 @@ const HeroSection: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Main heading */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            style={{ maxWidth: 720 }}
-          >
+          {/* Main heading — 3D word reveal */}
+          <div ref={headingRef} style={{ maxWidth: 720, perspective: '1000px' }}>
             <h1
               style={{
                 fontSize: 'clamp(3rem, 7vw, 5.5rem)',
                 fontWeight: 200,
                 lineHeight: 1.05,
                 marginBottom: 'var(--space-lg)',
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.25em',
               }}
             >
-              El arte de{' '}
-              <span className="text-gradient" style={{ fontWeight: 300 }}>
+              <span className="hero-word" style={{ opacity: 0 }}>El</span>
+              <span className="hero-word" style={{ opacity: 0 }}>arte</span>
+              <span className="hero-word" style={{ opacity: 0 }}>de</span>
+              <span
+                className="hero-word text-gradient"
+                style={{ fontWeight: 300, opacity: 0 }}
+              >
                 realzar
               </span>
-              <br />
-              tu belleza{' '}
+              <br style={{ flexBasis: '100%', height: 0 }} />
+              <span className="hero-word" style={{ opacity: 0 }}>tu</span>
+              <span className="hero-word" style={{ opacity: 0 }}>belleza</span>
               <span
-                className="text-serif"
-                style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--color-primary-light)' }}
+                className="hero-word text-serif"
+                style={{ fontStyle: 'italic', fontWeight: 400, color: 'var(--color-primary-light)', opacity: 0 }}
               >
                 natural
               </span>
             </h1>
-          </motion.div>
+          </div>
 
           {/* Subtitle */}
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
             style={{
               fontSize: '1.15rem',
               color: 'var(--color-text-secondary)',
@@ -95,27 +150,31 @@ const HeroSection: React.FC = () => {
             art&iacute;stica para resultados que respetan tu esencia y elevan tu confianza.
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons — Magnetic effect */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
+            transition={{ duration: 0.6, delay: 1.4 }}
             style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap' }}
           >
-            <a href="#contact" className="btn btn-accent">
-              <Star size={15} />
-              Reserva tu consulta
-            </a>
-            <a href="#treatments" className="btn btn-outline">
-              Descubrir tratamientos
-            </a>
+            <MagneticButton strength={0.3} radius={100}>
+              <a href="#contact" className="btn btn-accent btn-glow">
+                <Star size={15} />
+                Reserva tu consulta
+              </a>
+            </MagneticButton>
+            <MagneticButton strength={0.25} radius={80}>
+              <a href="#treatments" className="btn btn-outline">
+                Descubrir tratamientos
+              </a>
+            </MagneticButton>
           </motion.div>
 
           {/* Stats bar */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
+            transition={{ duration: 0.8, delay: 1.8 }}
             className="glass-panel"
             style={{
               display: 'inline-flex',
@@ -148,7 +207,7 @@ const HeroSection: React.FC = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        transition={{ delay: 2.5 }}
         style={{
           position: 'absolute',
           bottom: '2rem',

@@ -12,6 +12,21 @@ import Footer from './components/Footer';
 function App() {
   return (
     <div className="app-wrapper">
+      {/* SVG Gooey Filter (from game-website) */}
+      <svg className="hidden" style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <filter id="gooey">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+              result="gooey"
+            />
+          </filter>
+        </defs>
+      </svg>
+
       {/* Fixed 3D background */}
       <Hero3D />
 
